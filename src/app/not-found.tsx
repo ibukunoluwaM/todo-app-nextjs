@@ -14,7 +14,7 @@ function ErrorPage() {
       >
         <h1 className="text-5xl font-bold mb-4">404</h1>
         <p id="error-message">
-          Oops! Seems like the page you are looking for doesn't exist.
+          Oops! Seems like the page you are looking for does not exist.
         </p>
         <button
           onClick={()=> router.push("/")}

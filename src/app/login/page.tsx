@@ -1,11 +1,9 @@
 "use client";
 import { signIn } from "next-auth/react";
-import React, { FormEvent, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { useRouter } from "next/navigation";
-import { routeModule } from "next/dist/build/templates/app-page";
-
+import Image from "next/image";
 export default function Login() {
   // sets the content of the error messgae
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -102,7 +100,7 @@ export default function Login() {
               //pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               className="w-full bg-transparent input input-accent pl-2 border-none focus:outline-none py-3"
             />
-            <img
+            <Image
               src="/trailingIcon.svg"
               alt=""
               className="cursor-pointer"

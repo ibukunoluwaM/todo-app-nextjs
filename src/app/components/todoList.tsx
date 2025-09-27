@@ -79,13 +79,13 @@ function TodoList({
     },
   });
 
-  function deletedTodoList(id: number) {
-    const deletedId = JSON.parse(localStorage.getItem("deletedTodos") || "[]");
-    if (!deletedId.includes(id)) {
-      deletedId.push(id);
-      localStorage.setItem("deletedTodos", JSON.stringify(deletedId));
-    }
-  }
+  // function deletedTodoList(id: number) {
+  //   const deletedId = JSON.parse(localStorage.getItem("deletedTodos") || "[]");
+  //   if (!deletedId.includes(id)) {
+  //     deletedId.push(id);
+  //     localStorage.setItem("deletedTodos", JSON.stringify(deletedId));
+  //   }
+  // }
 
   // const deleteMutation = useMutation({
   //   mutationFn: async (id: number) => {

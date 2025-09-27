@@ -11,7 +11,7 @@ function Pagination({ totaltodos, totalPerPage, currentPage, setCurrentPage }: {
   // }
 
   let startPage = Math.max(currentPage - 1, 1);
-  let endPage = Math.min(
+  const endPage = Math.min(
     startPage + pageRange - 1,
     Math.ceil(totaltodos / totalPerPage)
   );
