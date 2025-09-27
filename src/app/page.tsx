@@ -1,103 +1,250 @@
-import Image from "next/image";
+"use client";
+import { signIn } from "next-auth/react";
+import React, { FormEvent, SetStateAction, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { useParams, useRouter } from "next/navigation";
+import { routeModule } from "next/dist/build/templates/app-page";
 
-export default function Home() {
+export default function Page() {
+  const router = useRouter();
+  // sets the content of the error messgae
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [visible, setVisible] = useState<boolean>(false);
+  const [isLoginLoading, setIsLoginLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [redirectMsg, setRedirectMsg] = useState<boolean>(false);
+  const [showErrorMsg, setShowErrorMsg] = useState<boolean>(false);
+  const [validationForm, setValidationForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+  });
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setValidationForm({ ...validationForm, [name]: value });
+  }
+
+  // handles new users sign up: credentials alone
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    // loading schema
+    setIsLoading(true);
+    // checks if input isnt empty
+
+    if (
+      validationForm.email === "" ||
+      validationForm.password === "" ||
+      validationForm.passwordConfirm === "" ||
+      validationForm.username === ""
+    ) {
+      setIsLoading(false);
+      setShowErrorMsg(true);
+      setErrorMsg(
+        " Email, password and username are required for signup! Kindly supply all required details to proceed."
+      );
+      setTimeout(() => {
+        setShowErrorMsg(false);
+      }, 5000);
+      return;
+    }
+
+    // if passwords don't match
+    if (validationForm.password !== validationForm.passwordConfirm) {
+      setErrorMsg("Passwords don't match. Enter the correct password.");
+      setShowErrorMsg(true);
+      setTimeout(() => {
+        setShowErrorMsg(false);
+      }, 3000);
+      setIsLoading(false);
+      return;
+    }
+
+    // saves sign in data
+    const signUpResponse = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: validationForm.email,
+        password: validationForm.password,
+        username: validationForm.username,
+      }),
+    });
+
+    // gets feedback from fetch api call
+    const data = await signUpResponse.json();
+
+    // handles sign in error
+    if (!signUpResponse.ok) {
+      setIsLoading(false);
+      setErrorMsg(data.error || "Signup failed. Try again.");
+      setShowErrorMsg(true);
+      setTimeout(() => setShowErrorMsg(false), 3000);
+      return;
+    }
+
+    // automatically signs new users in
+
+    await signIn("credentials", {
+      redirect: true,
+      email: validationForm.email,
+      password: validationForm.password,
+      callbackUrl: "/todo",
+    });
+    setIsLoading(false);
+    console.log(signUpResponse);
+  }
+
+  // hanled login loading
+  function logInLoading() {
+    router.push("/login");
+    setIsLoginLoading(true);
+  }
+
+  // handle google sign in
+  function handleGoogleSignIn() {
+    setRedirectMsg(true);
+    signIn("google", { callbackUrl: "/todo" });
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="w-[100%] h-[100vh] flex flex-col justify-center items-center">
+      <h1 className="text-center text-xl font-bold">To-do App</h1>
+      <p>Sign up to create an account</p>
+      <form onSubmit={handleSubmit} className="w-[600px]">
+        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box max-w-xl border p-4">
+          <legend className="fieldset-legend text-lg">Sign Up</legend>
+          {/* error message */}
+          <p className={`text-red-600 ${showErrorMsg ? "" : "hidden"} `}>
+            {errorMsg}
+          </p>
+          {/* username */}
+          <div className="pb-3">
+            <label className="pb-2" htmlFor="email">
+              Username:
+            </label>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <div className="pt-2">
+              <input
+                id="username"
+                required
+                type="text"
+                name="username"
+                onChange={handleChange}
+                onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                  const raw = e.target.value;
+                  const formatted =
+                    raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+                  setValidationForm({ ...validationForm, username: formatted });
+                }}
+                value={validationForm.username}
+                className="w-full bg-transparent input input-accent pl-2  focus:outline-none py-3"
+                placeholder="John Doe"
+              />
+            </div>
+          </div>
+
+          {/* email */}
+          <div className="pb-3">
+            <label className="pb-2" htmlFor="email">
+              Enter Email
+            </label>
+
+            <div className="pt-2">
+              <input
+                id="email"
+                type="email"
+                name="email"
+                onChange={handleChange}
+                value={validationForm.email}
+                className="w-full bg-transparent input input-accent pl-2  focus:outline-none py-3"
+                placeholder="user@example.com"
+              />
+            </div>
+          </div>
+          {/* password */}
+          <label className="" htmlFor="password">
+            Enter Password
+          </label>
+
+          <div className="flex border border-[#37cdbe] items-center px-2 rounded-md w-[100%]">
+            <input
+              type={visible ? "text" : "password"}
+              name="password"
+              onChange={handleChange}
+              value={validationForm.password}
+              placeholder="Password"
+              // minlength="8"
+              //pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              className="w-full bg-transparent input input-accent pl-2 border-none focus:outline-none py-3"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <img
+              src="/trailingIcon.svg"
+              alt=""
+              className="cursor-pointer"
+              onClick={() => setVisible(!visible)}
+            />
+          </div>
+
+          {/* confirm password */}
+          <label className="" htmlFor="password">
+            Confirm password
+          </label>
+
+          <div className="flex border border-[#37cdbe] items-center px-2 rounded-md w-[100%]">
+            <input
+              type={visible ? "text" : "password"}
+              name="passwordConfirm"
+              onChange={handleChange}
+              value={validationForm.passwordConfirm}
+              placeholder="Confirm Password"
+              // minlength="8"
+              //pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              className="w-full bg-transparent input input-accent pl-2 border-none focus:outline-none py-3"
+            />
+            <img
+              src="/trailingIcon.svg"
+              alt=""
+              className="cursor-pointer"
+              onClick={() => setVisible(!visible)}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-[#37cdbe] p-3 rounded-md text-white mt-3 hover:bg-gray-200 hover:text-black cursor-pointer"
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+            {isLoading ? (
+              <span className="loading loading-dots loading-xl"></span>
+            ) : (
+              "Sign up"
+            )}
+          </button>
+        </fieldset>
+      </form>
+      {redirectMsg ? (
+        <p className="mt-2">Redirecting...</p>
+      ) : (
+        <button
+          onClick={handleGoogleSignIn}
+          className="mt-3 bg-white p-2 hover:bg-gray-200 focus:bg-[#37cdbe] rounded-md cursor-pointer flex justify-center items-center"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+          <FontAwesomeIcon
+            icon={faGoogle}
+            style={{ color: "#63E6BE", fontSize: "24px" }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <span className="text-sm ml-2">Sign in with Google</span>
+        </button>
+      )}
+
+      <button onClick={logInLoading} className="cursor-pointer underline">
+        Have an account? Log in here
+      </button>
+      {isLoginLoading && (
+        <span className="loading loading-dots loading-xl inline"></span>
+      )}
     </div>
   );
 }
