@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/authOptions/authOptions";
 import { prisma } from "../../../../lib/prisma";
-import { NewTodo } from "@/app/todo/page";
  type CreateTodoInput = { title: string };
 
 // for creating new todos

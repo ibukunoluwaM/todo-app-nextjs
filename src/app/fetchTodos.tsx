@@ -4,7 +4,7 @@ import type { NewTodo } from "./todo/page";
 
 export let merged: NewTodo[];
 
-export async function fetchTodos(userId?: string) {
+export async function fetchTodos(userId?: string):Promise<NewTodo[]>{
 
 
   

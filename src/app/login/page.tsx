@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { routeModule } from "next/dist/build/templates/app-page";
 
 export default function Login() {
-  const router = useRouter();
   // sets the content of the error messgae
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [visible, setVisible] = useState<boolean>(false);

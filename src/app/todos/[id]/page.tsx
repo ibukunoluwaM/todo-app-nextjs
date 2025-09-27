@@ -15,7 +15,7 @@ function TodoDetailPage() {
   const router = useRouter();
   const { data } = useQuery<NewTodo[]>({
     queryKey: ["todos"],
-    queryFn: fetchTodos,
+    queryFn: ()=>fetchTodos(),
   });
   // collect the todos
   const todo = data?.find((t) => t.id === id);

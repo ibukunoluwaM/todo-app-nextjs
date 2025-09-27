@@ -143,59 +143,6 @@ const deleteTodoMutation = useMutation({
   },
 });
 
-  // const editTodoMutation = useMutation({
-  //   mutationFn: async (updatedTodo: NewTodo) => {
-  //     const response = await fetch(
-  //       `https://jsonplaceholder.typicode.com/todos/${updatedTodo.id}`,
-  //       {
-  //         method: "PATCH",
-  //         headers: {
-  //           "Content-type": "application/json",
-  //         },
-  //         body: JSON.stringify({ title: updatedTodo.title }),
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to edit todo");
-  //     }
-
-  //     return updatedTodo;
-  //   },
-
-  //   onSuccess: (updatedTodo) => {
-  //     // Update cache
-  //     queryClient.setQueryData(["todos"], (oldTodos: NewTodo[] = []) =>
-  //       oldTodos.map((todo) => (todo.id == updatedTodo.id ? updatedTodo : todo))
-  //     );
-
-  //     // Try to update localStorage
-  //     const storedTodos = JSON.parse(
-  //       localStorage.getItem(local_todos_key) || "[]"
-  //     );
-
-  //     // updated edited todos
-  //     const updatedLocalTodos: NewTodo = storedTodos.map((todo: NewTodo) =>
-  //       todo.id === updatedTodo.id ? updatedTodo : todo
-  //     );
-
-  //     localStorage.setItem(local_todos_key, JSON.stringify(updatedLocalTodos));
-
-  //     //editing fetched todos
-  //     const editedTodos: NewTodo[] = JSON.parse(
-  //       localStorage.getItem("editedTodos") || "[]"
-  //     );
-  //     const updatedEdits = [
-  //       ...editedTodos.filter((todo: NewTodo) => todo.id !== updatedTodo.id),
-  //       updatedTodo,
-  //     ];
-  //     localStorage.setItem("editedTodos", JSON.stringify(updatedEdits));
-
-  //     // UI reset
-  //     setEditingTodoId(null);
-  //     setEditInput("");
-  //   },
-  // });
 
   //new
   const editTodoMutation = useMutation({

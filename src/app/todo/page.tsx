@@ -8,9 +8,6 @@ import TodoForm from "../components/todoForm";
 import { fetchTodos } from "../fetchTodos";
 import { redirect } from "next/navigation";
 import UserGreeting from "../../../username";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../authOptions/authOptions";
-import { prisma } from "../../../lib/prisma";
 export type NewTodo = {
   userId: string;
   id: number;
@@ -55,7 +52,7 @@ function TodosPage() {
   }
 
 
-  const { data, isLoading, isFetching, error } = useQuery<NewTodo[], Error>({
+  const { data, isLoading, error } = useQuery<NewTodo[], Error>({
     queryKey: ["todos", session?.user?.id ],
     queryFn: ()=>fetchTodos(session?.user?.id),
      enabled: !!session?.user?.id,
