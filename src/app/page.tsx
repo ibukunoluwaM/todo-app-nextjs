@@ -1,11 +1,10 @@
 "use client";
 import { signIn } from "next-auth/react";
-import React, { FormEvent, SetStateAction, useState } from "react";
+import React, {  useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { useParams, useRouter } from "next/navigation";
-import { routeModule } from "next/dist/build/templates/app-page";
-
+import {  useRouter } from "next/navigation";
+import Image from "next/image";
 export default function Page() {
   const router = useRouter();
   // sets the content of the error messgae
@@ -180,7 +179,7 @@ export default function Page() {
               //pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               className="w-full bg-transparent input input-accent pl-2 border-none focus:outline-none py-3"
             />
-            <img
+            <Image
               src="/trailingIcon.svg"
               alt=""
               className="cursor-pointer"
@@ -204,7 +203,7 @@ export default function Page() {
               //pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               className="w-full bg-transparent input input-accent pl-2 border-none focus:outline-none py-3"
             />
-            <img
+            <Image
               src="/trailingIcon.svg"
               alt=""
               className="cursor-pointer"
