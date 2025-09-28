@@ -1,9 +1,10 @@
-import NextAuth from "next-auth";
-import { NextAuthOptions } from "next-auth";
+import NextAuth  from "next-auth";
+import  { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcrypt";
 import { prisma } from "../../../../../lib/prisma";
+
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -23,33 +24,27 @@ export const authOptions: NextAuthOptions = {
 
       // runs whens oemone tries to sign in with email and password to authorize user
       async authorize(credentials) {
-        try {
-          if (!credentials?.email || !credentials?.password) {
-            throw new Error("Email or password cannot be empty!");
-          }
-
-          // Looks for existing user
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
-          });
-
-          if (!user) {
-            throw new Error(
-              "This email does not exist in the record! Please check and try again."
-            ); //user doesnt exit.
-          }
-          // password confirmation
-          const isValid = await bcrypt.compare(
-            credentials.password,
-            user.password!
-          );
-          if (!isValid) {
-            throw new Error("Wrong password! Please check and try again.");
-          } //password wrong.
-          return user;
-        } catch (error) {
-          console.log(error);
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email or password cannot be empty!");
         }
+
+        // Looks for existing user
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user) {
+          throw new Error("This email does not exist in the record! Please check and try again."); //user doesnt exit.
+        }
+        // password confirmation
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.password!
+        );
+        if (!isValid) {
+          throw new Error("Wrong password! Please check and try again.");
+        } //password wrong.
+        return user;
       },
     }),
   ],
@@ -58,24 +53,24 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt", // sessions stored in a JWT
-    maxAge: 24 * 60 * 60,
+    maxAge: 24 * 60 * 60
   },
 
-  jwt: {
+    jwt: {
     maxAge: 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.sub = user.id;
+        token.sub = user.id; 
         token.name = user.name;
-      } // attach the DB user ID to JWT
+      }// attach the DB user ID to JWT
       return token;
     },
     async session({ session, token }) {
       if (token.sub) {
         session.user.id = token.sub;
-        session.user.name = token.name;
+        session.user.name = token.name ;
       }
       return session;
     },
