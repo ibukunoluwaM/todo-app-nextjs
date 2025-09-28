@@ -5,9 +5,8 @@ import { signOut, useSession } from "next-auth/react";
 import FilterBar from "../components/filterBar";
 import TodoList from "../components/todoList";
 import TodoForm from "../components/todoForm";
-import { fetchTodos } from "../fetchTodos";
+import { fetchTodos } from "../components/fetchTodos";
 import { redirect } from "next/navigation";
-import UserGreeting from "../../../username";
 export type NewTodo = {
   userId: string;
   id: number;
@@ -97,7 +96,7 @@ function TodosPage() {
 
       <TodoForm />
 
-<UserGreeting/>
+{/* <UserGreeting/> */}
       <TodoList data={filteredTodos} isLoading={isLoading}  error={error} />
 
       {confirmLogOut && (

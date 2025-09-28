@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import SessionWrapper from "./providers";
+import SessionWrapper from "./components/sessionProviders";
 export const metadata: Metadata = {
   title: "Todo App",
   description: "An online todo app",

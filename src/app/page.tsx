@@ -182,6 +182,8 @@ export default function Page() {
             <Image
               src="/trailingIcon.svg"
               alt=""
+              width={20}
+              height={20}
               className="cursor-pointer"
               onClick={() => setVisible(!visible)}
             />
@@ -206,6 +208,8 @@ export default function Page() {
             <Image
               src="/trailingIcon.svg"
               alt=""
+              width={20}
+              height={20}
               className="cursor-pointer"
               onClick={() => setVisible(!visible)}
             />

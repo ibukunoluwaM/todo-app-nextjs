@@ -4,7 +4,7 @@ import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { NewTodo } from "@/app/todo/page";
 import { useQuery } from "@tanstack/react-query";
-import { fetchTodos } from "../../fetchTodos";
+import { fetchTodos } from "../../components/fetchTodos";
 // import { useNavigate } from "react-router-dom";
 
 function TodoDetailPage() {

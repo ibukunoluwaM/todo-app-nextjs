@@ -1,6 +1,6 @@
 "use client";
-import { getTodosFromLocalStorage } from "./components/todoForm";
-import type { NewTodo } from "./todo/page";
+import { getTodosFromLocalStorage } from "./todoForm";
+import type { NewTodo } from "../todo/page";
 
 export let merged: NewTodo[];
 

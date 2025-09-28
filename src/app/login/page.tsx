@@ -103,6 +103,8 @@ export default function Login() {
             <Image
               src="/trailingIcon.svg"
               alt=""
+              width={30}
+              height={30}
               className="cursor-pointer"
               onClick={() => setVisible(!visible)}
             />
